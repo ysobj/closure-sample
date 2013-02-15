@@ -34,19 +34,31 @@ goog.inherits(com.karatebancho.Kgrid, goog.ui.Component);
  */
 com.karatebancho.Kgrid.CLASS_NAME_ = goog.getCssName('kgrid');
 
+/**
+ * @type {string}
+ * @private
+ */
+com.karatebancho.Kgrid.BODY_CLASS_NAME_ = goog.getCssName('kgrid-body');
+
 
 /**
  * @override
  */
 com.karatebancho.Kgrid.prototype.createDom = function() {
   var dh = this.getDomHelper()
-  this.tbl_ = dh.createDom('table'), hds = [];
+  var el = dh.createDom("div",{class: com.karatebancho.Kgrid.CLASS_NAME_}),hds = [];
+  var bodyEl = dh.createDom("div", { class: com.karatebancho.Kgrid.BODY_CLASS_NAME_});
+  this.header_ = dh.createDom('table');
+  this.bodyTbl_ = dh.createDom('table');
   goog.array.forEach(this.headers_, function(el, ind, arr) {
       hds.push(dh.createDom('th', undefined, el.label));
     }, this);
-  this.tbl_.appendChild(dh.createDom('tr', undefined, hds));
+  this.header_.appendChild(dh.createDom('tr', undefined, hds));
+  bodyEl.appendChild(this.bodyTbl_);
+  el.appendChild(this.header_);
+  el.appendChild(bodyEl);
 
-  this.decorateInternal(this.tbl_);
+  this.decorateInternal(el);
 };
 
 
@@ -70,8 +82,23 @@ com.karatebancho.Kgrid.prototype.setRows = function(rows) {
 com.karatebancho.Kgrid.prototype.addRow = function(row) {
   var dh = this.getDomHelper();
   var values = [];
+  var sizeList = this.size();
   goog.array.forEach(this.headers_, function(el, ind, arr) {
-      values.push(dh.createDom('td', undefined, row[el.name]));
+      values.push(dh.createDom('td', {style: "width:" + sizeList[ind]}, row[el.name]));
     },this);
+  this.bodyTbl_.appendChild(dh.createDom('tr', undefined, values));
+};
+
+/**
+ * @return {array.<number>} ヘッダの幅のリスト.
+ */
+com.karatebancho.Kgrid.prototype.size = function() {
+  var dh = this.getDomHelper();
+  var sizeList = [];
+  goog.array.forEach(dh.getElementsByTagNameAndClass('th',null,this.header_),
+    function(val,ind){
+      sizeList.push(val['scrollWidth'] - 2 /*とりあえず...*/);
+    });
+  return sizeList;
 };
 
