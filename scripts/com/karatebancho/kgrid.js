@@ -48,7 +48,9 @@ com.karatebancho.Kgrid.prototype.createDom = function() {
   var dh = this.getDomHelper()
   var el = dh.createDom("div",{class: com.karatebancho.Kgrid.CLASS_NAME_}),hds = [];
   var bodyEl = dh.createDom("div", { class: com.karatebancho.Kgrid.BODY_CLASS_NAME_});
+  //ヘッダを格納するテーブル
   this.header_ = dh.createDom('table');
+  //データを格納するテーブル
   this.bodyTbl_ = dh.createDom('table');
   goog.array.forEach(this.headers_, function(el, ind, arr) {
       hds.push(dh.createDom('th', undefined, el.label));
