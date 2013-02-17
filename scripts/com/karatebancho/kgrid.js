@@ -86,7 +86,7 @@ com.karatebancho.Kgrid.prototype.addRow = function(row) {
   var values = [];
   var sizeList = this.size();
   goog.array.forEach(this.headers_, function(el, ind, arr) {
-      values.push(dh.createDom('td', {style: "width:" + sizeList[ind]}, row[el.name]));
+      values.push(dh.createDom('td', {style: "width:" + sizeList[ind] + "px"}, row[el.name]));
     },this);
   this.bodyTbl_.appendChild(dh.createDom('tr', undefined, values));
 };

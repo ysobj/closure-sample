@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+		<head>
+				<meta charset="UTF-8">
+				<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+				<script src="closure-library/closure/goog/base.js"></script>
+				<script>
+						goog.require('goog.dom');
+						goog.require('goog.events');
+						goog.require('goog.fx.Dragger');
+						goog.require('goog.math');
+				</script>
+				<style>
+						.draggable{
+								position:absolute;
+						}
+						.dummy{
+								border: 1px solid black;
+								background-color: gray;
+								position:absolute;
+						}
+						.dnd{
+								border: 1px solid black;
+						}
+				</style>
+		</head>
+		<body>
+				<div id="header" style="position:absolute">
+				<table id="headertable">
+						<tr>
+								<td class='dnd' id='a'>AAAA</td>
+								<td class='dnd' id='b'>BBBB</td>
+								<td class='dnd' id='c'>CCCC</td>
+						</tr>
+				</table>
+				</div>
+				<!-- div style="height:300px;width:400px;position:absolute">
+				<div id="d" class="draggable"> sss </div>
+				</div -->
+				<script>
+						var $ = goog.dom.getElement;
+						/*
+						console.log($('d'));
+						var src = new goog.fx.Dragger($('d'));
+						goog.events.listen(src,'start',function(e){console.log(e)});
+						*/
+
+						goog.events.listen($('header'), 'mousedown', function(e){
+								var target = e.target;
+								var parent = target.parentElement;
+								var ctarget = e.currentTarget;
+
+								var targetRect = goog.style.getBounds(target);
+
+								console.log(goog.style.getBounds(target));
+								console.log(goog.style.getBorderBox(target));
+
+								/*
+								var h = target.scrollHeight;
+								var w = target.scrollWidth;
+								var top = target.offsetTop;
+								var left = target.offsetLeft;
+								*/
+
+								var d = goog.dom.createDom('div',{class:'dummy'},goog.dom.getTextContent(target));
+								d.style.width = targetRect.width + "px";
+								d.style.height = targetRect.height + "px";
+								d.style.left = targetRect.left + "px";
+								d.style.top = targetRect.top + "px";
+								goog.dom.appendChild(ctarget, d);
+								var limits = goog.style.getBounds(parent);
+
+								var src = new goog.fx.Dragger(d,null,limits);
+								src.startDrag(e);
+								goog.events.listenOnce(document, 'mouseup',
+									function(e){
+											goog.dom.removeNode(d);
+									}
+								);
+						});
+				</script>
+		</body>
+</html>
