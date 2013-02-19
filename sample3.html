@@ -32,6 +32,7 @@
 								<td class='dnd' id='a'>AAAA</td>
 								<td class='dnd' id='b'>BBBB</td>
 								<td class='dnd' id='c'>CCCC</td>
+								<td class='dnd' id='d'>DDDD</td>
 						</tr>
 				</table>
 				</div>
@@ -42,13 +43,7 @@
             goog.base(this);
             this.element_ = element;
 
-            var pos = goog.style.getPageOffset(this.element_);
-            var size = goog.style.getSize(this.element_);
-
-            var box = new goog.math.Box(pos.y, pos.x + size.width,
-                                            pos.y + size.height, pos.x);
-
-            this.limits = goog.math.Rect.createFromBox(box);
+            this.limits = this.calcLimit_();
 
             var tr = goog.dom.getElementsByTagNameAndClass('tr', null, element);
             this.baseTr_ = tr[0]
@@ -60,10 +55,25 @@
           goog.inherits(test.Header, goog.fx.DragDropGroup);
           test.Header.prototype.createDraggerFor  = function(sourceEl, el, event){
             var dragger = goog.base(this, 'createDraggerFor', sourceEl, el, event);
-            console.log(this.limits);
-            dragger.setLimits(this.limits);
+						var nLimits = this.limits.clone();
+						var size = goog.style.getSize(el);
+						nLimits.left += 1;
+						nLimits.top += 1;
+						nLimits.height -= size.height + 3; // ???
+						nLimits.width  -= size.width + 2; // ???
+            dragger.setLimits(nLimits);
             return dragger;
           };
+					test.Header.prototype.calcLimit_ = function(){
+						  var pos = goog.style.getPageOffset(this.element_);
+
+						  var marginBox = goog.style.getMarginBox(this.element_);
+						  pos.x -= (marginBox.left || 0) * 2;
+						  pos.y -= (marginBox.top || 0) * 2;
+						  var size = goog.style.getSize(this.element_);
+						  console.log(marginBox);
+						  return new goog.math.Rect(pos.x, pos.y, size.width, size.height );
+					};
         </script>
 				<script>
           var header = new test.Header(goog.dom.getElement('headertable'));

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+		<head>
+				<meta charset="UTF-8">
+				<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+				<script src="closure-library/closure/goog/base.js"></script>
+				<script>
+						goog.require('goog.dom');
+						goog.require('goog.events');
+						goog.require('goog.fx.DragDrop');
+						goog.require('goog.fx.DragDropGroup');
+						goog.require('goog.math');
+				</script>
+				<style>
+						.draggable{
+								position:absolute;
+						}
+						.dummy{
+								border: 1px solid black;
+								background-color: gray;
+								position:absolute;
+						}
+						.dnd{
+								border: 1px solid black;
+						}
+				</style>
+		</head>
+		<body>
+				<div id="header" style="position:absolute">
+				<table id="headertable">
+						<tr>
+								<td class='dnd' id='a'>AAAA</td>
+								<td class='dnd' id='b'>BBBB</td>
+								<td class='dnd' id='c'>CCCC</td>
+								<td class='dnd' id='d'>DDDD</td>
+								<td class='dnd' id='e'>EEEE</td>
+								<td class='dnd' id='f'>FFFF</td>
+						</tr>
+				</table>
+				</div>
+				<script>
+						var list = new goog.fx.DragDropGroup();
+						goog.array.forEach(goog.dom.getElementsByTagNameAndClass('td'),
+						function(val,ind){
+								list.addItem(val, val.firstChild.nodeValue);
+						});
+						list.addTarget(list);
+						list.addScrollableContainer(goog.dom.getElement('headertable'));
+						list.init();
+				</script>
+		</body>
+</html>
