@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+		<head>
+				<meta charset="UTF-8">
+				<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+				<script src="closure-library/closure/goog/base.js"></script>
+				<script>
+						goog.require('goog.dom');
+						goog.require('goog.events');
+						goog.require('goog.fx.DragDropGroup');
+						goog.require('goog.math');
+            goog.require('goog.math.Rect');
+				</script>
+				<style>
+						.draggable{
+								position:absolute;
+						}
+						.dummy{
+								border: 1px solid black;
+								background-color: gray;
+								position:absolute;
+						}
+						.dnd{
+								border: 1px solid black;
+						}
+				</style>
+		</head>
+		<body>
+				<div id="header" style="position:absolute">
+				<table id="headertable" style="border: 1px solid red">
+						<tr>
+								<td class='dnd' id='a'>AAAA</td>
+								<td class='dnd' id='b'>BBBB</td>
+								<td class='dnd' id='c'>CCCC</td>
+						</tr>
+				</table>
+				</div>
+        <script>
+          goog.provide('test.Header');
+          goog.require('goog.style');
+          test.Header = function(element){
+            goog.base(this);
+            this.element_ = element;
+
+            var pos = goog.style.getPageOffset(this.element_);
+            var size = goog.style.getSize(this.element_);
+
+            var box = new goog.math.Box(pos.y, pos.x + size.width,
+                                            pos.y + size.height, pos.x);
+
+            this.limits = goog.math.Rect.createFromBox(box);
+
+            var tr = goog.dom.getElementsByTagNameAndClass('tr', null, element);
+            this.baseTr_ = tr[0]
+            var tds = goog.dom.getElementsByTagNameAndClass('td', null, this.baseTr_);
+            goog.array.forEach(tds,function(val,ind){
+              this.addItem(val, val.firstChild.nodeValue);
+            }, this);
+          };
+          goog.inherits(test.Header, goog.fx.DragDropGroup);
+          test.Header.prototype.createDraggerFor  = function(sourceEl, el, event){
+            var dragger = goog.base(this, 'createDraggerFor', sourceEl, el, event);
+            console.log(this.limits);
+            dragger.setLimits(this.limits);
+            return dragger;
+          };
+        </script>
+				<script>
+          var header = new test.Header(goog.dom.getElement('headertable'));
+          header.addTarget(header);
+          header.init();
+				</script>
+		</body>
+</html>
