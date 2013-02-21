@@ -51,6 +51,7 @@
             goog.array.forEach(tds,function(val,ind){
               this.addItem(val, val.firstChild.nodeValue);
             }, this);
+            goog.events.listen(this,'drop',this.drop_);
           };
           goog.inherits(test.Header, goog.fx.DragDropGroup);
           test.Header.prototype.createDraggerFor  = function(sourceEl, el, event){
@@ -74,6 +75,12 @@
 						  console.log(marginBox);
 						  return new goog.math.Rect(pos.x, pos.y, size.width, size.height );
 					};
+          test.Header.prototype.drop_ = function(event){
+            var src = event.dragSourceItem.element;
+            var tgt = event.dropTargetItem.element;
+            console.log(event);
+            goog.dom.insertSiblingAfter(src,tgt);
+          };
         </script>
 				<script>
           var header = new test.Header(goog.dom.getElement('headertable'));
